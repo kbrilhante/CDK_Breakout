@@ -17,8 +17,8 @@ const blockColors = {
 }
 
 const blockMeasurements = {
-    width: 80,
-    height: 30
+    width: cnv.width * 80 / 525,
+    height: cnv.height * 30 / 700
 }
 
 let paddle, ball;
@@ -50,8 +50,8 @@ class Ball {
         this.radius = 10;
         this.px = cnv.width / 2;
         this.py = paddle.py - this.radius;
-        this.dx = 0;
-        this.dy = 0;
+        this.dx = -2;
+        this.dy = -2;
     }
     drawBall() {
         ctx.beginPath();
@@ -60,6 +60,22 @@ class Ball {
         ctx.fill();
         ctx.strokeStyle = "#eee";
         ctx.stroke();
+    }
+    move() {
+        this.px += this.dx;
+        this.py += this.dy;
+        // console.log(this.px, this.py)
+        if (this.px - this.radius <= 0 || this.px + this.radius >= cnv.width) {
+            this.dx = -this.dx;
+        }
+        if (this.py - this.radius <= 0) {
+            this.dy = -this.dy;
+        }
+        if (this.py + this.radius >= cnv.height) {
+            // lose life
+            // restart game
+            this.dy = -this.dy; // delete that
+        }
     }
 }
 
@@ -73,6 +89,7 @@ class Block {
         this.topLeft = new Object();
         this.topLeft.px = px;
         this.topLeft.py = py;
+        this.dx = 0;
     }
     drawBlock() {
         ctx.beginPath();
@@ -90,12 +107,14 @@ initialize();
 
 function initialize() {
     // addEventListener("keydown", keyDownHandler);
+    // cnv.addEventListener("touchmove", toucMoveHandler);
+    // cnv.addEventListener("touchstart", touchStartHandler);
+    // cnv.addEventListener("resize", canvasResize);
     drawBackground();
     paddle = new Paddle();
     ball = new Ball();
-    block = new Block(10, 100);
-    draw();
-    // setInterval(draw, 1000/fps);
+    draw(); 
+    setInterval(draw, 1000/fps);
 }
 
 function draw() {
@@ -104,14 +123,11 @@ function draw() {
     drawBackground();
     paddle.drawPaddle();
     ball.drawBall();
-    block.drawBlock();
-    ball.px += ball.dx;
-    ball.py += ball.dy;
+    ball.move();
 }
 
 function drawBackground() {
     ctx.fillStyle = background;
     ctx.fillRect(0, 0, cnv.width, cnv.height);
 }
-
 
