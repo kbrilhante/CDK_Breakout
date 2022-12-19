@@ -1,0 +1,44 @@
+body {
+  /* background-image: url("./img/paint_bg.jpg"); */
+  /* background-repeat: no-repeat; */
+  /* background-attachment: fixed; */
+  /* background-position: center; */
+  /* background-size: cover; */
+  /* overflow: hidden; */
+  margin: 0;
+  padding: 0;
+  background-color: darkslategray;
+}
+
+.canvas-container {
+  /* margin: 0.5rem; */
+  /* padding: 0.5rem; */
+  text-align: center;
+  /* border-style: solid; */
+  /* border-width: 0.3rem; */
+  /* border-color: #000; */
+  /* border-radius: 1rem; */
+}
+
+#title {
+  color: #fff;
+}
+
+.canvas {
+  border: 0;
+  background-color: #222;
+  cursor: pointer;
+}
+
+.canvas-body-content {
+  margin: auto;
+  padding: 1rem;
+}
+
+#btnColor {
+  display: none;
+}
+
+#txtLine {
+  width: 4rem;
+}
