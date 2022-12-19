@@ -84,16 +84,16 @@ class Block {
     }
 }
 
+let block;
+
 initialize();
 
 function initialize() {
     drawBackground();
     paddle = new Paddle();
-    paddle.drawPaddle();
     ball = new Ball();
-    ball.drawBall();
-    const block = new Block(10, 100);
-    block.drawBlock()
+    block = new Block(10, 100);
+    draw();
     // setInterval(draw, 1000/fps);
 }
 
@@ -101,9 +101,9 @@ function draw() {
     // console.dir(ctx)
     console.log(canvas.width, canvas.height);
     drawBackground();
-    drawPaddle();
-    drawBall();
-    drawBlock(10, 100);
+    paddle.drawPaddle();
+    ball.drawBall();
+    block.drawBlock();
     ball.px += ball.dx;
     ball.py += ball.dy;
 }
