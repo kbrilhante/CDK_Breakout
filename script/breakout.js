@@ -16,29 +16,12 @@ const blockColors = {
     magenta: "#FF00FF"
 }
 
-const ball = {
-    color: "#00FF80",
-    radius: 10,
-    px: cnv.width / 2,
-    py: cnv.height - 30,
-    dx: 2,
-    dy: -2
-}
-
-// const paddle = {
-//     color: "#FF0080",
-//     width: cnv.width * 120 / 525,
-//     height: cnv.height * 20 / 700,
-//     px: (cnv.width / 2) - (paddle.width / 2),
-//     py: 600,
-//     dx: 0,
-//     dy: 0
-// }
-
 const blockMeasurements = {
     width: 80,
     height: 30
 }
+
+let paddle, ball;
 
 class Paddle {
     constructor() {
@@ -50,21 +33,69 @@ class Paddle {
         this.dx = 0;
         this.dy = 0;
     }
+
+    drawPaddle() {
+        ctx.beginPath();
+        ctx.rect(this.px, this.py, this.width, this.height);
+        ctx.fillStyle = this.color;
+        ctx.fill();
+        ctx.strokeStyle = "#eee";
+        ctx.stroke();
+    }
+}
+
+class Ball {
+    constructor() {
+        this.color = "#00FF80";
+        this.radius = 10;
+        this.px = cnv.width / 2;
+        this.py = paddle.py - this.radius;
+        this.dx = 0;
+        this.dy = 0;
+    }
+    drawBall() {
+        ctx.beginPath();
+        ctx.arc(this.px, this.py, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        ctx.fill();
+        ctx.strokeStyle = "#eee";
+        ctx.stroke();
+    }
 }
 
 class Block {
     constructor(px, py) {
+        const colors = Object.keys(blockColors);
+        const randomColorIndex = Math.floor(Math.random() * colors.length);
+        this.color = blockColors[colors[randomColorIndex]];
         this.width = blockMeasurements.width;
         this.height = blockMeasurements.height;
         this.topLeft = new Object();
         this.topLeft.px = px;
         this.topLeft.py = py;
     }
+    drawBlock() {
+        ctx.beginPath();
+        ctx.rect(this.topLeft.px, this.topLeft.py, this.width, this.height);
+        ctx.fillStyle = this.color;
+        ctx.fill();
+        ctx.strokeStyle = "#eee";
+        ctx.stroke();
+    }
 }
 
-draw();
+initialize();
 
-// setInterval(draw, 1000/fps);
+function initialize() {
+    drawBackground();
+    paddle = new Paddle();
+    paddle.drawPaddle();
+    ball = new Ball();
+    ball.drawBall();
+    const block = new Block(10, 100);
+    block.drawBlock()
+    // setInterval(draw, 1000/fps);
+}
 
 function draw() {
     // console.dir(ctx)
@@ -82,34 +113,4 @@ function drawBackground() {
     ctx.fillRect(0, 0, cnv.width, cnv.height);
 }
 
-function drawPaddle() {
-    const paddle = new Paddle();
-    ctx.beginPath();
-    ctx.rect(paddle.px, paddle.py, paddle.width, paddle.height);
-    ctx.fillStyle = paddle.color;
-    ctx.fill();
-    ctx.strokeStyle = "#eee";
-    ctx.stroke();
-}
 
-function drawBall() {
-    ctx.beginPath();
-    ctx.arc(ball.px, ball.py, ball.radius, 0, Math.PI * 2);
-    ctx.fillStyle = ball.color;
-    ctx.fill();
-    ctx.strokeStyle = "#eee";
-    ctx.stroke();
-}
-
-function drawBlock(px, py) {
-    const colors = Object.keys(blockColors);
-    const randomColorIndex = Math.floor(Math.random() * colors.length);
-    const block = new Block(px, py);
-    console.log(block)
-    ctx.beginPath();
-    ctx.rect(block.topLeft.px, block.topLeft.py, block.width, block.height);
-    ctx.fillStyle = blockColors[colors[randomColorIndex]];
-    ctx.fill();
-    ctx.strokeStyle = "#eee";
-    ctx.stroke();
-}
