@@ -84,11 +84,12 @@ class Block {
     }
 }
 
-let block;
+let block; 
 
 initialize();
 
 function initialize() {
+    // addEventListener("keydown", keyDownHandler);
     drawBackground();
     paddle = new Paddle();
     ball = new Ball();
