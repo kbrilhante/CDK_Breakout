@@ -33,7 +33,7 @@ class Paddle {
         this.px = (cnv.width / 2) - (this.width / 2);
         this.py = cnv.height - this.height - 20;
         this.dx = 10;
-        this.centerx = this.px + (this.width / 2);
+        this.cx = this.px + (this.width / 2);
     }
     drawPaddle() {
         ctx.beginPath();
@@ -42,7 +42,7 @@ class Paddle {
         ctx.fill();
         ctx.strokeStyle = "#eee";
         ctx.stroke();
-        this.centerx = this.px + (this.width / 2);
+        this.cx = this.px + (this.width / 2);
     }
     deletePaddle() {
         delete this.color;
@@ -90,22 +90,26 @@ class Ball {
         delete this.dy;
     }
     move() {
-        this.px += this.dx;
-        this.py += this.dy;
-        prepBall();
-        // console.log(this.px, this.py)
-        //collisions check
-        if (this.px - this.radius <= 0 || this.px + this.radius >= cnv.width) {
-            this.dx = -this.dx;
-        }
-        if (this.py - this.radius <= 0) {
-            this.dy = -this.dy;
-        }
-        if (this.py + this.radius >= paddle.py && (this.px + this.radius >= paddle.px && this.px - this.radius <= paddle.px + paddle.width)) {
-            this.dy = -this.dy;
-        }
-        if (this.py + this.radius >= cnv.height) {
-            lostBall();
+        if (gameStart) {
+            this.px += this.dx;
+            this.py += this.dy;
+            // console.log(this.px, this.py)
+            //collisions check
+            if (this.px - this.radius <= 0 || this.px + this.radius >= cnv.width) {
+                this.dx = -this.dx;
+            }
+            if (this.py - this.radius <= 0) {
+                this.dy = -this.dy;
+            }
+            if (this.py + this.radius >= paddle.py && (this.px + this.radius >= paddle.px && this.px - this.radius <= paddle.px + paddle.width)) {
+                this.dy = -this.dy;
+                bouncePaddle();
+            }
+            if (this.py + this.radius >= cnv.height) {
+                lostBall();
+            }
+        } else {
+            this.px = paddle.cx;
         }
     }
 }
@@ -174,7 +178,6 @@ function keyDownHandler(e) {
             gameStart = true;
         }
     }
-
 }
 
 function movePaddleLeft() {
@@ -191,10 +194,9 @@ function movePaddleRight() {
     }
 }
 
-function prepBall() {
-    if (!gameStart) {
-            ball.px = paddle.centerx
-        }
+function bouncePaddle() {
+    console.log(Math.round(ball.px - paddle.cx));
+
 }
 
 function lostBall() {
@@ -205,3 +207,4 @@ function lostBall() {
     paddle = new Paddle();
     // check lives
 }
+
