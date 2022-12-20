@@ -22,6 +22,8 @@ const blockMeasurements = {
 }
 
 let paddle, ball;
+var gameStart = false;
+var gameOver = false;
 
 class Paddle {
     constructor() {
@@ -55,10 +57,12 @@ class Ball {
     constructor() {
         this.color = "#00FF80";
         this.radius = 10;
+        this.angle = 0;
+        this.velocity = 4;
         this.px = cnv.width / 2;
         this.py = paddle.py - this.radius;
-        this.dx = -2;
-        this.dy = -4;
+        this.dx = 0;
+        this.dy = 0;
     }
     drawBall() {
         ctx.beginPath();
@@ -67,6 +71,13 @@ class Ball {
         ctx.fill();
         ctx.strokeStyle = "#eee";
         ctx.stroke();
+    }
+    launch() {
+        this.angle = Math.floor(Math.random() * 120) - 60;
+        const radians = Math.PI * this.angle / 180;
+        this.dx = Math.sin(radians) * this.velocity;
+        this.dy = - Math.cos(radians) * this.velocity;
+        console.log(this.angle, this.dx, this.dy)
     }
     deleteBall() {
         delete this.color;
@@ -91,11 +102,7 @@ class Ball {
             this.dy = -this.dy;
         }
         if (this.py + this.radius >= cnv.height) {
-            // lose life
-            // restart paddle
-            // paddle.deletePaddle();
-            // restart ball
-            // ball.deleteBall();
+            lostBall();
         }
     }
 }
@@ -122,21 +129,21 @@ class Block {
     }
 }
 
-let block; 
+let block;
 
 initialize();
 
 function initialize() {
     console.log(canvas.width, canvas.height);
     addEventListener("keydown", keyDownHandler);
-    // cnv.addEventListener("touchmove", toucMoveHandler);
+    // cnv.addEventListener("touchmove", touchMoveHandler);
     // cnv.addEventListener("touchstart", touchStartHandler);
     // cnv.addEventListener("resize", canvasResize);
     drawBackground();
     paddle = new Paddle();
     ball = new Ball();
-    draw(); 
-    setInterval(draw, 1000/fps);
+    draw();
+    setInterval(draw, 1000 / fps);
 }
 
 function draw() {
@@ -154,25 +161,49 @@ function drawBackground() {
 
 function keyDownHandler(e) {
     const key = e.code;
-    console.log(key)
+    // console.log(key)
     // paddle controls
-    if (key === 'KeyA' || key === 'ArrowLeft') {
-        movePaddleLeft();
-    } else if (key === 'KeyD' || key === 'ArrowRight') {
-        movePaddleRight();
+    if (!gameOver) {
+        if (key === 'KeyA' || key === 'ArrowLeft') {
+            movePaddleLeft();
+        } else if (key === 'KeyD' || key === 'ArrowRight') {
+            movePaddleRight();
+        }
+        if (!gameStart && key === 'Space') {
+            ball.launch();
+            gameStart = true;
+        }
     }
+
 }
 
-function movePaddleLeft () {
+function movePaddleLeft() {
     if (paddle.px > paddle.dx) {
         // left
         paddle.px -= paddle.dx;
+        prepBall();
     }
 }
 
-function movePaddleRight () {
+function movePaddleRight() {
     if (paddle.px + paddle.width < cnv.width - paddle.dx) {
         // right
         paddle.px += paddle.dx;
+        prepBall();
     }
+}
+
+function prepBall() {
+    if (!gameStart) {
+            ball.px = paddle.px + (paddle.width / 2);
+        }
+}
+
+function lostBall() {
+    gameStart = false;
+    ball.deleteBall();
+    ball = new Ball(0);
+    paddle.deletePaddle();
+    paddle = new Paddle();
+    // check lives
 }
