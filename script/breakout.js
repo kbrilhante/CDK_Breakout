@@ -30,8 +30,7 @@ class Paddle {
         this.height = cnv.height * 20 / 700;
         this.px = (cnv.width / 2) - (this.width / 2);
         this.py = cnv.height - this.height - 20;
-        this.dx = 0;
-        this.dy = 0;
+        this.dx = 10;
     }
     drawPaddle() {
         ctx.beginPath();
@@ -58,7 +57,7 @@ class Ball {
         this.radius = 10;
         this.px = cnv.width / 2;
         this.py = paddle.py - this.radius;
-        this.dx = -4;
+        this.dx = -2;
         this.dy = -4;
     }
     drawBall() {
@@ -94,9 +93,9 @@ class Ball {
         if (this.py + this.radius >= cnv.height) {
             // lose life
             // restart paddle
-            paddle.deletePaddle();
+            // paddle.deletePaddle();
             // restart ball
-            ball.deleteBall();
+            // ball.deleteBall();
         }
     }
 }
@@ -129,7 +128,7 @@ initialize();
 
 function initialize() {
     console.log(canvas.width, canvas.height);
-    // addEventListener("keydown", keyDownHandler);
+    addEventListener("keydown", keyDownHandler);
     // cnv.addEventListener("touchmove", toucMoveHandler);
     // cnv.addEventListener("touchstart", touchStartHandler);
     // cnv.addEventListener("resize", canvasResize);
@@ -153,3 +152,27 @@ function drawBackground() {
     ctx.fillRect(0, 0, cnv.width, cnv.height);
 }
 
+function keyDownHandler(e) {
+    const key = e.code;
+    console.log(key)
+    // paddle controls
+    if (key === 'KeyA' || key === 'ArrowLeft') {
+        movePaddleLeft();
+    } else if (key === 'KeyD' || key === 'ArrowRight') {
+        movePaddleRight();
+    }
+}
+
+function movePaddleLeft () {
+    if (paddle.px > paddle.dx) {
+        // left
+        paddle.px -= paddle.dx;
+    }
+}
+
+function movePaddleRight () {
+    if (paddle.px + paddle.width < cnv.width - paddle.dx) {
+        // right
+        paddle.px += paddle.dx;
+    }
+}
