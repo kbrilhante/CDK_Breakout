@@ -74,12 +74,23 @@ class Ball {
         ctx.strokeStyle = "#eee";
         ctx.stroke();
     }
-    launch() {
-        this.angle = Math.floor(Math.random() * 120) - 60;
+    bounce() {
         const radians = Math.PI * this.angle / 180;
         this.dx = Math.sin(radians) * this.velocity;
         this.dy = - Math.cos(radians) * this.velocity;
-        console.log(this.angle, this.dx, this.dy)
+        // console.log(this.angle, this.dx, this.dy)
+    }
+    launch() {
+        this.angle = Math.floor(Math.random() * 120) - 60;
+        this.bounce();
+    }
+    bouncePaddle() {
+        // console.log(Math.round(ball.px - paddle.cx));
+        const ballD = this.px - paddle.cx;
+        const newAngle = Math.round(ballD * 120 / paddle.width);
+        console.log(newAngle);
+        this.angle = newAngle;
+        this.bounce();
     }
     deleteBall() {
         delete this.color;
@@ -103,7 +114,7 @@ class Ball {
             }
             if (this.py + this.radius >= paddle.py && (this.px + this.radius >= paddle.px && this.px - this.radius <= paddle.px + paddle.width)) {
                 this.dy = -this.dy;
-                bouncePaddle();
+                this.bouncePaddle();
             }
             if (this.py + this.radius >= cnv.height) {
                 lostBall();
@@ -112,6 +123,7 @@ class Ball {
             this.px = paddle.cx;
         }
     }
+
 }
 
 class Block {
@@ -194,11 +206,7 @@ function movePaddleRight() {
     }
 }
 
-function bouncePaddle() {
-    console.log(Math.round(ball.px - paddle.cx));
-    const ballD = ball.px - paddle.cx;
 
-}
 
 function lostBall() {
     gameStart = false;
@@ -208,4 +216,3 @@ function lostBall() {
     paddle = new Paddle();
     // check lives
 }
-
