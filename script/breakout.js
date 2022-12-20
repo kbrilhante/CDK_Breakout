@@ -33,7 +33,6 @@ class Paddle {
         this.dx = 0;
         this.dy = 0;
     }
-
     drawPaddle() {
         ctx.beginPath();
         ctx.rect(this.px, this.py, this.width, this.height);
@@ -41,6 +40,15 @@ class Paddle {
         ctx.fill();
         ctx.strokeStyle = "#eee";
         ctx.stroke();
+    }
+    deletePaddle() {
+        delete this.color;
+        delete this.width;
+        delete this.height;
+        delete this.px;
+        delete this.py;
+        delete this.dx;
+        delete this.dy;
     }
 }
 
@@ -50,8 +58,8 @@ class Ball {
         this.radius = 10;
         this.px = cnv.width / 2;
         this.py = paddle.py - this.radius;
-        this.dx = -2;
-        this.dy = -2;
+        this.dx = -4;
+        this.dy = -4;
     }
     drawBall() {
         ctx.beginPath();
@@ -61,20 +69,34 @@ class Ball {
         ctx.strokeStyle = "#eee";
         ctx.stroke();
     }
+    deleteBall() {
+        delete this.color;
+        delete this.radius;
+        delete this.px;
+        delete this.py;
+        delete this.dx;
+        delete this.dy;
+    }
     move() {
         this.px += this.dx;
         this.py += this.dy;
         // console.log(this.px, this.py)
+        //collisions check
         if (this.px - this.radius <= 0 || this.px + this.radius >= cnv.width) {
             this.dx = -this.dx;
         }
         if (this.py - this.radius <= 0) {
             this.dy = -this.dy;
         }
+        if (this.py + this.radius >= paddle.py && (this.px + this.radius >= paddle.px && this.px - this.radius <= paddle.px + paddle.width)) {
+            this.dy = -this.dy;
+        }
         if (this.py + this.radius >= cnv.height) {
             // lose life
-            // restart game
-            this.dy = -this.dy; // delete that
+            // restart paddle
+            paddle.deletePaddle();
+            // restart ball
+            ball.deleteBall();
         }
     }
 }
@@ -106,6 +128,7 @@ let block;
 initialize();
 
 function initialize() {
+    console.log(canvas.width, canvas.height);
     // addEventListener("keydown", keyDownHandler);
     // cnv.addEventListener("touchmove", toucMoveHandler);
     // cnv.addEventListener("touchstart", touchStartHandler);
@@ -119,7 +142,6 @@ function initialize() {
 
 function draw() {
     // console.dir(ctx)
-    console.log(canvas.width, canvas.height);
     drawBackground();
     paddle.drawPaddle();
     ball.drawBall();
