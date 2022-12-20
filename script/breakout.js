@@ -196,6 +196,7 @@ function movePaddleRight() {
 
 function bouncePaddle() {
     console.log(Math.round(ball.px - paddle.cx));
+    const ballD = ball.px - paddle.cx;
 
 }
 
