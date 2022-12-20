@@ -33,6 +33,7 @@ class Paddle {
         this.px = (cnv.width / 2) - (this.width / 2);
         this.py = cnv.height - this.height - 20;
         this.dx = 10;
+        this.centerx = this.px + (this.width / 2);
     }
     drawPaddle() {
         ctx.beginPath();
@@ -41,6 +42,7 @@ class Paddle {
         ctx.fill();
         ctx.strokeStyle = "#eee";
         ctx.stroke();
+        this.centerx = this.px + (this.width / 2);
     }
     deletePaddle() {
         delete this.color;
@@ -90,6 +92,7 @@ class Ball {
     move() {
         this.px += this.dx;
         this.py += this.dy;
+        prepBall();
         // console.log(this.px, this.py)
         //collisions check
         if (this.px - this.radius <= 0 || this.px + this.radius >= cnv.width) {
@@ -114,22 +117,19 @@ class Block {
         this.color = blockColors[colors[randomColorIndex]];
         this.width = blockMeasurements.width;
         this.height = blockMeasurements.height;
-        this.topLeft = new Object();
-        this.topLeft.px = px;
-        this.topLeft.py = py;
+        this.px = px;
+        this.py = py;
         this.dx = 0;
     }
     drawBlock() {
         ctx.beginPath();
-        ctx.rect(this.topLeft.px, this.topLeft.py, this.width, this.height);
+        ctx.rect(this.px, this.py, this.width, this.height);
         ctx.fillStyle = this.color;
         ctx.fill();
         ctx.strokeStyle = "#eee";
         ctx.stroke();
     }
 }
-
-let block;
 
 initialize();
 
@@ -181,7 +181,6 @@ function movePaddleLeft() {
     if (paddle.px > paddle.dx) {
         // left
         paddle.px -= paddle.dx;
-        prepBall();
     }
 }
 
@@ -189,13 +188,12 @@ function movePaddleRight() {
     if (paddle.px + paddle.width < cnv.width - paddle.dx) {
         // right
         paddle.px += paddle.dx;
-        prepBall();
     }
 }
 
 function prepBall() {
     if (!gameStart) {
-            ball.px = paddle.px + (paddle.width / 2);
+            ball.px = paddle.centerx
         }
 }
 
