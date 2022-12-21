@@ -78,7 +78,6 @@ class Ball {
         const radians = Math.PI * this.angle / 180;
         this.dx = Math.sin(radians) * this.velocity;
         this.dy = - Math.cos(radians) * this.velocity;
-        // console.log(this.angle, this.dx, this.dy)
     }
     launch() {
         this.angle = Math.floor(Math.random() * 120) - 60;
@@ -87,8 +86,7 @@ class Ball {
     bouncePaddle() {
         // console.log(Math.round(ball.px - paddle.cx));
         const ballD = this.px - paddle.cx;
-        const newAngle = Math.round(ballD * 120 / paddle.width);
-        console.log(newAngle);
+        const newAngle = ballD * 120 / paddle.width;
         this.angle = newAngle;
         this.bounce();
     }
@@ -145,6 +143,10 @@ class Block {
         ctx.strokeStyle = "#eee";
         ctx.stroke();
     }
+}
+
+class BlockGroup {
+    
 }
 
 initialize();
