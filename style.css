@@ -27,7 +27,6 @@ body {
 .canvas {
   border: 0;
   background-color: #222;
-  cursor: pointer;
 }
 
 .canvas-body-content {
