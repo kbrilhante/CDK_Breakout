@@ -51,7 +51,6 @@ class Paddle {
         this.cx = this.px + (this.width / 2);
     }
     move() {
-        console.log(direction)
         const leftWall = this.vx;
         const rightWall = cnv.width - this.vx;
         const paddleLeft = this.px;
