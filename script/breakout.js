@@ -10,26 +10,30 @@ const blockColors = {
     orange: "#FF8000",
     yellow: "#FFFF00",
     green: "#00FF00",
-    cyan: "#00FFFF",
     blue: "#0000FF",
-    purple: "#8000FF",
-    magenta: "#FF00FF"
+    purple: "#8000FF"
+}
+
+const canvasBaseMeasurements = {
+    width: 525,
+    height: 700
 }
 
 const blockMeasurements = {
-    width: cnv.width * 80 / 525,
-    height: cnv.height * 30 / 700
+    width: cnv.width * 80 / canvasBaseMeasurements.width,
+    height: cnv.height * 30 / canvasBaseMeasurements.height
 }
 
 let paddle, ball;
 var gameStart = false;
 var gameOver = false;
+var level = 1;
 
 class Paddle {
     constructor() {
-        this.color = "#FF0080";
-        this.width = cnv.width * 120 / 525;
-        this.height = cnv.height * 20 / 700;
+        this.color = "#00FFFF";
+        this.width = cnv.width * 120 / canvasBaseMeasurements.width;
+        this.height = cnv.height * 20 / canvasBaseMeasurements.height;
         this.px = (cnv.width / 2) - (this.width / 2);
         this.py = cnv.height - this.height - 20;
         this.dx = 10;
@@ -57,8 +61,8 @@ class Paddle {
 
 class Ball {
     constructor() {
-        this.color = "#00FF80";
-        this.radius = 10;
+        this.color = "#FF00FF";
+        this.radius = cnv.width * 10 / canvasBaseMeasurements.width;
         this.angle = 0;
         this.velocity = 4;
         this.px = cnv.width / 2;
@@ -146,7 +150,13 @@ class Block {
 }
 
 class BlockGroup {
-    
+    constructor() {
+        this.blockRowCount = level + 2;
+        this.blockColumnCount = level;
+        this.blockGap = 0
+        const maxWidth = cnv.width * 0.9;
+
+    }
 }
 
 initialize();
@@ -162,6 +172,11 @@ function initialize() {
     ball = new Ball();
     draw();
     setInterval(draw, 1000 / fps);
+}
+
+function canvasResize() {
+    blockMeasurements.width = cnv.width * 80 / canvasBaseMeasurements.width;
+    blockMeasurements.height = cnv.height * 30 / canvasBaseMeasurements.height;
 }
 
 function draw() {
