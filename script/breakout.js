@@ -65,15 +65,11 @@ class Paddle {
 
         this.px += this.dx;
     }
-    deletePaddle() {
-        delete this.color;
-        delete this.width;
-        delete this.height;
-        delete this.px;
-        delete this.py;
-        delete this.dx;
-        delete this.vx;
-        delete this.dy;
+    destroy() {
+        const keys = Object.keys(this);
+        keys.forEach(key => {
+            delete this[key];
+        });
     }
 }
 
@@ -112,13 +108,11 @@ class Ball {
         this.angle = newAngle;
         this.bounce();
     }
-    deleteBall() {
-        delete this.color;
-        delete this.radius;
-        delete this.px;
-        delete this.py;
-        delete this.dx;
-        delete this.dy;
+    destroy() {
+        const keys = Object.keys(this);
+        keys.forEach(key => {
+            delete this[key];
+        });
     }
     move() {
         if (gameStart) {
@@ -153,16 +147,24 @@ class Block {
         this.color = blockColors[colors[randomColorIndex]];
         this.width = blockMeasurements.width;
         this.height = blockMeasurements.height;
-        this.px = px;
-        this.py = py;
+        this.left = px;
+        this.right = px + this.width;
+        this.top = py;
+        this.bottom = py + this.height;
     }
     drawBlock() {
         ctx.beginPath();
-        ctx.rect(this.px, this.py, this.width, this.height);
+        ctx.rect(this.left, this.top, this.width, this.height);
         ctx.fillStyle = this.color;
         ctx.fill();
         ctx.strokeStyle = "#eee";
         ctx.stroke();
+    }
+    destroy() {
+        const keys = Object.keys(this);
+        keys.forEach(key => {
+            delete this[key];
+        });
     }
 }
 
@@ -178,7 +180,7 @@ class BlockGroup {
 }
 
 initialize();
-
+var block;
 function initialize() {
     console.log(canvas.width, canvas.height);
     addEventListener("keydown", keyDownHandler);
@@ -189,6 +191,8 @@ function initialize() {
     drawBackground();
     paddle = new Paddle();
     ball = new Ball();
+    block = new Block(100, 100); // delete
+    block.drawBlock(); // delete
     // draw();
     setInterval(draw, 1000 / fps);
 }
@@ -205,6 +209,7 @@ function draw() {
     paddle.move();
     ball.drawBall();
     ball.move();
+    block.drawBlock(); // delete
 }
 
 function drawBackground() {
@@ -233,13 +238,16 @@ function keyDownHandler(e) {
             direction = 'stop';
         }
     }
+    if (key === 'KeyZ') {
+        block.destroy();
+    }
 }
 
 function lostBall() {
     gameStart = false;
-    ball.deleteBall();
+    ball.destroy();
     ball = new Ball(0);
-    paddle.deletePaddle();
+    paddle.destroy();
     paddle = new Paddle();
     // check lives
 }
