@@ -25,6 +25,7 @@ const blockMeasurements = {
 }
 
 let paddle, ball;
+let direction = 'stop';
 var gameStart = false;
 var gameOver = false;
 var level = 1;
@@ -36,7 +37,8 @@ class Paddle {
         this.height = cnv.height * 20 / canvasBaseMeasurements.height;
         this.px = (cnv.width / 2) - (this.width / 2);
         this.py = cnv.height - this.height - 20;
-        this.dx = 10;
+        this.dx = 0;
+        this.vx = 10;
         this.cx = this.px + (this.width / 2);
     }
     drawPaddle() {
@@ -48,6 +50,22 @@ class Paddle {
         ctx.stroke();
         this.cx = this.px + (this.width / 2);
     }
+    move() {
+        console.log(direction)
+        const leftWall = this.vx;
+        const rightWall = cnv.width - this.vx;
+        const paddleLeft = this.px;
+        const paddleRight = this.px + this.width;
+        if (paddleLeft > leftWall && direction === 'left') {
+            this.dx = -this.vx;
+        } else if (paddleRight < rightWall && direction === 'right') {
+            this.dx = this.vx;
+        } else {
+            this.dx = 0;
+        }
+
+        this.px += this.dx;
+    }
     deletePaddle() {
         delete this.color;
         delete this.width;
@@ -55,6 +73,7 @@ class Paddle {
         delete this.px;
         delete this.py;
         delete this.dx;
+        delete this.vx;
         delete this.dy;
     }
 }
@@ -137,7 +156,6 @@ class Block {
         this.height = blockMeasurements.height;
         this.px = px;
         this.py = py;
-        this.dx = 0;
     }
     drawBlock() {
         ctx.beginPath();
@@ -155,7 +173,6 @@ class BlockGroup {
         this.blockColumnCount = level;
         this.blockGap = 0
         const maxWidth = cnv.width * 0.9;
-
     }
 }
 
@@ -164,13 +181,14 @@ initialize();
 function initialize() {
     console.log(canvas.width, canvas.height);
     addEventListener("keydown", keyDownHandler);
+    addEventListener("keyup", keyDownHandler);
     // cnv.addEventListener("touchmove", touchMoveHandler);
     // cnv.addEventListener("touchstart", touchStartHandler);
     // cnv.addEventListener("resize", canvasResize);
     drawBackground();
     paddle = new Paddle();
     ball = new Ball();
-    draw();
+    // draw();
     setInterval(draw, 1000 / fps);
 }
 
@@ -183,6 +201,7 @@ function draw() {
     // console.dir(ctx)
     drawBackground();
     paddle.drawPaddle();
+    paddle.move();
     ball.drawBall();
     ball.move();
 }
@@ -193,37 +212,27 @@ function drawBackground() {
 }
 
 function keyDownHandler(e) {
+    // console.log(e);
+    const upDown = e.type;
     const key = e.code;
     // console.log(key)
     // paddle controls
     if (!gameOver) {
-        if (key === 'KeyA' || key === 'ArrowLeft') {
-            movePaddleLeft();
-        } else if (key === 'KeyD' || key === 'ArrowRight') {
-            movePaddleRight();
-        }
         if (!gameStart && key === 'Space') {
             ball.launch();
             gameStart = true;
         }
+        if (upDown === 'keydown') {
+            if (key === 'KeyA' || key === 'ArrowLeft') {
+                direction = 'left';
+            } else if (key === 'KeyD' || key === 'ArrowRight') {
+                direction = 'right';
+            }
+        } else {
+            direction = 'stop';
+        }
     }
 }
-
-function movePaddleLeft() {
-    if (paddle.px > paddle.dx) {
-        // left
-        paddle.px -= paddle.dx;
-    }
-}
-
-function movePaddleRight() {
-    if (paddle.px + paddle.width < cnv.width - paddle.dx) {
-        // right
-        paddle.px += paddle.dx;
-    }
-}
-
-
 
 function lostBall() {
     gameStart = false;
