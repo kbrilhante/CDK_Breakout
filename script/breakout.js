@@ -170,7 +170,9 @@ class BlockGroup {
     constructor() {
         this.blockRowCount = level + 2;
         this.blockColumnCount = level + 1;
-        this.blockGap = 0
+        this.blockGap = 10;
+        this.blockOffsetTop = 30;
+        this.blockOffsetBottom = 30;
         const maxWidth = cnv.width * 0.9;
     }
 }
