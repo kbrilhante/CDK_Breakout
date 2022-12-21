@@ -63,7 +63,7 @@ class Paddle {
         //     this.dx = 0;
         // }
 
-        this.px += this.dx;
+        // this.px += this.dx;
     }
     deletePaddle() {
         delete this.color;
@@ -228,9 +228,9 @@ function keyDownHandler(e) {
             //     direction = 'right';
             // }
             if (key === 'KeyA' || key === 'ArrowLeft') {
-                paddle.dx = -10;
+                paddle.px -= 10;
             } else if (key === 'KeyD' || key === 'ArrowRight') {
-                paddle.dx = 10;
+                paddle.px += 10;
             }
         } else {
             direction = 'stop';
