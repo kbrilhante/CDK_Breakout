@@ -55,15 +55,15 @@ class Paddle {
         const rightWall = cnv.width - this.vx;
         const paddleLeft = this.px;
         const paddleRight = this.px + this.width;
-        // if (paddleLeft > leftWall && direction === 'left') {
-        //     this.dx = -this.vx;
-        // } else if (paddleRight < rightWall && direction === 'right') {
-        //     this.dx = this.vx;
-        // } else {
-        //     this.dx = 0;
-        // }
+        if (paddleLeft > leftWall && direction === 'left') {
+            this.dx = -this.vx;
+        } else if (paddleRight < rightWall && direction === 'right') {
+            this.dx = this.vx;
+        } else {
+            this.dx = 0;
+        }
 
-        // this.px += this.dx;
+        this.px += this.dx;
     }
     deletePaddle() {
         delete this.color;
@@ -180,7 +180,7 @@ initialize();
 function initialize() {
     console.log(canvas.width, canvas.height);
     addEventListener("keydown", keyDownHandler);
-    // addEventListener("keyup", keyDownHandler);
+    addEventListener("keyup", keyDownHandler);
     // cnv.addEventListener("touchmove", touchMoveHandler);
     // cnv.addEventListener("touchstart", touchStartHandler);
     // cnv.addEventListener("resize", canvasResize);
@@ -222,15 +222,10 @@ function keyDownHandler(e) {
             gameStart = true;
         }
         if (upDown === 'keydown') {
-            // if (key === 'KeyA' || key === 'ArrowLeft') {
-            //     direction = 'left';
-            // } else if (key === 'KeyD' || key === 'ArrowRight') {
-            //     direction = 'right';
-            // }
             if (key === 'KeyA' || key === 'ArrowLeft') {
-                paddle.px -= 10;
+                direction = 'left';
             } else if (key === 'KeyD' || key === 'ArrowRight') {
-                paddle.px += 10;
+                direction = 'right';
             }
         } else {
             direction = 'stop';
