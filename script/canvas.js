@@ -7,7 +7,7 @@ initialize();
 
 function initialize() {
     const viewport = getViewport();
-    addEventListener('resize', resizeCanvas);
+    addEventListener('load', resizeCanvas);
     checktopBar();
 }
 
