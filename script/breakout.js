@@ -178,17 +178,17 @@ class BlockGroup {
         this.count = 0;
         this.blocks = new Set();
         const maxWidth = cnv.width * 0.9;
-        const maxHeight = cnv.height -(this.offsetTop + this.offsetBottom);
+        const maxHeight = cnv.height - (this.offsetTop + this.offsetBottom);
         const blockRowWidth = (blockMeasurements.width * this.blockRowCount) + (this.blockGap * (this.blockRowCount - 1));
         const blockRowStart = Math.round((maxWidth / 2) - (blockRowWidth) / 2);
         // this.blocks = new Block(blockRowStart, this.offsetTop);
-        for (let c = 0; c < this.blockColumnCount; c++) {
-            for (let r = 0; r < this.blockRowCount; r++) {
+        for (let r = 0; r < this.blockRowCount; r++) {
+            for (let c = 0; c < this.blockColumnCount; c++) {
                 
             }
         }
     }
-    drawGroup () {
+    drawGroup() {
         this.blocks.forEach(block => {
             block.drawBlock();
         });
