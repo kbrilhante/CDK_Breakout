@@ -9,7 +9,7 @@ var paddle, ball, blockGroup;
 var direction = 'stop';
 var gameStart = false;
 var gameOver = false;
-var level = 10;
+var level = 1;
 
 const blockColors = {
     red: "#FF0000",
@@ -170,7 +170,7 @@ class Block {
         const ballBottom = ball.py + ball.radius;
         if (ballLeft < this.right && ballRight > this.left && ballTop < this.bottom && ballBottom > this.top) {
             ball.dy = -ball.dy;
-            ball.speed++;
+            ball.speed += 0.2;
             this.destroy();
             return true;
         } else {
