@@ -232,8 +232,8 @@ initialize();
 function initialize() {
     addEventListener("keydown", keyDownHandler);
     addEventListener("keyup", keyDownHandler);
-    // cnv.addEventListener("touchmove", touchMoveHandler);
-    // cnv.addEventListener("touchstart", touchStartHandler);
+    cnv.addEventListener("touchmove", touchHandler);
+    cnv.addEventListener("touchstart", touchHandler);
     // cnv.addEventListener("resize", canvasResize);
     drawBackground();
     paddle = new Paddle();
@@ -243,10 +243,10 @@ function initialize() {
     setInterval(draw, 1000 / fps);
 }
 
-function canvasResize() {
-    blockMeasurements.width = cnv.width * 80 / canvasBaseMeasurements.width;
-    blockMeasurements.height = cnv.height * 30 / canvasBaseMeasurements.height;
-}
+// function canvasResize() {
+//     blockMeasurements.width = cnv.width * 80 / canvasBaseMeasurements.width;
+//     blockMeasurements.height = cnv.height * 30 / canvasBaseMeasurements.height;
+// }
 
 function draw() {
     // console.dir(ctx)
@@ -284,6 +284,12 @@ function keyDownHandler(e) {
             direction = 'stop';
         }
     }
+}
+
+function touchHandler(e) {
+    console.log(e);
+    const target = e.touches[0].clientX - (cnv.offsetLeft + cnv.clientLeft);
+
 }
 
 function lostBall() {
