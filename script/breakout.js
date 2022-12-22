@@ -5,6 +5,12 @@ const fps = 60;
 
 const background = "#222222"
 
+let paddle, ball, brickGroup;
+let direction = 'stop';
+var gameStart = false;
+var gameOver = false;
+var level = 1;
+
 const blockColors = {
     red: "#FF0000",
     orange: "#FF8000",
@@ -23,12 +29,6 @@ const blockMeasurements = {
     width: cnv.width * 80 / canvasBaseMeasurements.width,
     height: cnv.height * 30 / canvasBaseMeasurements.height
 }
-
-let paddle, ball;
-let direction = 'stop';
-var gameStart = false;
-var gameOver = false;
-var level = 1;
 
 class Paddle {
     constructor() {
