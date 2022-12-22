@@ -173,16 +173,15 @@ class BlockGroup {
         this.blockRowCount = level + 2;
         this.blockColumnCount = level + 1;
         this.blockGap = 10;
-        this.blockOffsetTop = 30;
-        this.blockOffsetBottom = 30;
+        this.offsetTop = 30;
+        this.offsetBottom = cnv.height - 100;
         const maxWidth = cnv.width * 0.9;
+        const maxHeight = cnv.height -(this.offsetTop + this.offsetBottom);
     }
 }
 
 initialize();
-var block;
 function initialize() {
-    console.log(canvas.width, canvas.height);
     addEventListener("keydown", keyDownHandler);
     addEventListener("keyup", keyDownHandler);
     // cnv.addEventListener("touchmove", touchMoveHandler);
@@ -191,8 +190,6 @@ function initialize() {
     drawBackground();
     paddle = new Paddle();
     ball = new Ball();
-    block = new Block(100, 100); // delete
-    block.drawBlock(); // delete
     // draw();
     setInterval(draw, 1000 / fps);
 }
@@ -209,7 +206,6 @@ function draw() {
     paddle.move();
     ball.drawBall();
     ball.move();
-    block.drawBlock(); // delete
 }
 
 function drawBackground() {
@@ -237,9 +233,6 @@ function keyDownHandler(e) {
         } else {
             direction = 'stop';
         }
-    }
-    if (key === 'KeyZ') {
-        block.destroy();
     }
 }
 
