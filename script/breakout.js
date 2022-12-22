@@ -9,7 +9,7 @@ var paddle, ball, blockGroup;
 var direction = 'stop';
 var gameStart = false;
 var gameOver = false;
-var level = 5;
+var level = 1;
 
 const blockColors = {
     red: "#FF0000",
@@ -62,7 +62,6 @@ class Paddle {
         } else {
             this.dx = 0;
         }
-
         this.px += this.dx;
     }
     destroy() {
@@ -164,13 +163,27 @@ class Block {
             delete this[key];
         });
     }
+    collisionCheck() {
+        const ballLeft = ball.px - ball.radius;
+        const ballRight = ball.px + ball.radius;
+        const ballTop = ball.py - ball.radius;
+        const ballBottom = ball.py + ball.radius;
+        if (ballLeft < this.right && ballRight > this.left && ballTop < this.bottom && ballBottom > this.top) {
+            ball.dx = -ball.dx;
+            ball.dy = -ball.dy;
+            this.destroy();
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
 
 class BlockGroup {
     constructor() {
         this.blockRowCount = level + 2;
         this.blockColumnCount = level + 1;
-        this.blockGap = 10;
+        this.blockGap = 50 / level;
         this.offsetTop = 100;
         this.offsetBottom = cnv.height - 100;
         this.count = 0;
@@ -178,8 +191,11 @@ class BlockGroup {
         const maxWidth = cnv.width * 0.9;
         let rowWidth = this.getRowWidth();
         if (rowWidth > maxWidth) {
-            const newBlockWidth = maxWidth / this.blockColumnCount
-            console.log(newBlockWidth)
+            const newBlockWidth = (maxWidth / this.blockColumnCount) - this.blockGap;
+            const newBlockHeight = newBlockWidth * blockMeasurements.height / blockMeasurements.width;
+            blockMeasurements.width = newBlockWidth;
+            blockMeasurements.height = newBlockHeight;
+            rowWidth = this.getRowWidth();
         }
         const maxHeight = cnv.height - (this.offsetTop + this.offsetBottom);
         const rowStart = Math.round((cnv.width / 2) - (rowWidth / 2));
@@ -196,13 +212,13 @@ class BlockGroup {
                 this.count++;
             }
         }
-        console.dir(this)
     }
     getRowWidth() {
-        return (blockMeasurements.width * this.blockColumnCount) + (this.blockGap * (this.blockColumnCount - 1)); 
+        return (blockMeasurements.width * this.blockColumnCount) + (this.blockGap * (this.blockColumnCount - 1));
     }
     drawGroup() {
         this.blocks.forEach(block => {
+            block.collisionCheck();
             block.drawBlock();
         });
     }
