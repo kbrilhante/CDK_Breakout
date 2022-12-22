@@ -5,8 +5,8 @@ const fps = 60;
 
 const background = "#222222"
 
-let paddle, ball, brickGroup;
-let direction = 'stop';
+var paddle, ball, blockGroup;
+var direction = 'stop';
 var gameStart = false;
 var gameOver = false;
 var level = 1;
@@ -173,14 +173,31 @@ class BlockGroup {
         this.blockRowCount = level + 2;
         this.blockColumnCount = level + 1;
         this.blockGap = 10;
-        this.offsetTop = 30;
+        this.offsetTop = 100;
         this.offsetBottom = cnv.height - 100;
+        this.count = 0;
+        this.blocks = new Set();
         const maxWidth = cnv.width * 0.9;
         const maxHeight = cnv.height -(this.offsetTop + this.offsetBottom);
+        const blockRowWidth = (blockMeasurements.width * this.blockRowCount) + (this.blockGap * (this.blockRowCount - 1));
+        const blockRowStart = Math.round((maxWidth / 2) - (blockRowWidth) / 2);
+        // this.blocks = new Block(blockRowStart, this.offsetTop);
+        for (let c = 0; c < this.blockColumnCount; c++) {
+            for (let r = 0; r < this.blockRowCount; r++) {
+                
+            }
+        }
     }
+    drawGroup () {
+        this.blocks.forEach(block => {
+            block.drawBlock();
+        });
+    }
+
 }
 
 initialize();
+
 function initialize() {
     addEventListener("keydown", keyDownHandler);
     addEventListener("keyup", keyDownHandler);
@@ -190,8 +207,9 @@ function initialize() {
     drawBackground();
     paddle = new Paddle();
     ball = new Ball();
-    // draw();
-    setInterval(draw, 1000 / fps);
+    blockGroup = new BlockGroup();
+    draw();
+    // setInterval(draw, 1000 / fps);
 }
 
 function canvasResize() {
@@ -206,6 +224,7 @@ function draw() {
     paddle.move();
     ball.drawBall();
     ball.move();
+    blockGroup.drawGroup();
 }
 
 function drawBackground() {
