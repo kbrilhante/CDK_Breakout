@@ -9,15 +9,15 @@ var paddle, ball, blockGroup;
 var direction = 'stop';
 var gameStart = false;
 var gameOver = false;
-var level = 1;
+var level = 5;
 
 const blockColors = {
     red: "#FF0000",
-    orange: "#FF8000",
     yellow: "#FFFF00",
     green: "#00FF00",
+    cyan: "#00FFFF",
     blue: "#0000FF",
-    purple: "#8000FF"
+    magenta: "#FF00FF"
 }
 
 const canvasBaseMeasurements = {
@@ -32,7 +32,7 @@ const blockMeasurements = {
 
 class Paddle {
     constructor() {
-        this.color = "#00FFFF";
+        this.color = "#FF8000";
         this.width = cnv.width * 120 / canvasBaseMeasurements.width;
         this.height = cnv.height * 20 / canvasBaseMeasurements.height;
         this.px = (cnv.width / 2) - (this.width / 2);
@@ -75,7 +75,7 @@ class Paddle {
 
 class Ball {
     constructor() {
-        this.color = "#FF00FF";
+        this.color = "#80FF00";
         this.radius = cnv.width * 10 / canvasBaseMeasurements.width;
         this.angle = 0;
         this.velocity = 4;
@@ -142,9 +142,7 @@ class Ball {
 
 class Block {
     constructor(px, py) {
-        const colors = Object.keys(blockColors);
-        const randomColorIndex = Math.floor(Math.random() * colors.length);
-        this.color = blockColors[colors[randomColorIndex]];
+        this.color = '#FFFFFF';
         this.width = blockMeasurements.width;
         this.height = blockMeasurements.height;
         this.left = px;
@@ -178,15 +176,30 @@ class BlockGroup {
         this.count = 0;
         this.blocks = new Set();
         const maxWidth = cnv.width * 0.9;
+        let rowWidth = this.getRowWidth();
+        if (rowWidth > maxWidth) {
+            const newBlockWidth = maxWidth / this.blockColumnCount
+            console.log(newBlockWidth)
+        }
         const maxHeight = cnv.height - (this.offsetTop + this.offsetBottom);
-        const blockRowWidth = (blockMeasurements.width * this.blockRowCount) + (this.blockGap * (this.blockRowCount - 1));
-        const blockRowStart = Math.round((maxWidth / 2) - (blockRowWidth) / 2);
+        const rowStart = Math.round((cnv.width / 2) - (rowWidth / 2));
         // this.blocks = new Block(blockRowStart, this.offsetTop);
         for (let r = 0; r < this.blockRowCount; r++) {
             for (let c = 0; c < this.blockColumnCount; c++) {
-                
+                const px = rowStart + ((blockMeasurements.width + this.blockGap) * c);
+                const py = this.offsetTop + ((blockMeasurements.height + this.blockGap) * r);
+                const block = new Block(px, py);
+                const colors = Object.keys(blockColors);
+                const colorIndex = r % colors.length;
+                block.color = blockColors[colors[colorIndex]];
+                this.blocks.add(block);
+                this.count++;
             }
         }
+        console.dir(this)
+    }
+    getRowWidth() {
+        return (blockMeasurements.width * this.blockColumnCount) + (this.blockGap * (this.blockColumnCount - 1)); 
     }
     drawGroup() {
         this.blocks.forEach(block => {
@@ -208,8 +221,8 @@ function initialize() {
     paddle = new Paddle();
     ball = new Ball();
     blockGroup = new BlockGroup();
-    draw();
-    // setInterval(draw, 1000 / fps);
+    // draw();
+    setInterval(draw, 1000 / fps);
 }
 
 function canvasResize() {
