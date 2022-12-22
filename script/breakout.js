@@ -9,7 +9,7 @@ var paddle, ball, blockGroup;
 var direction = 'stop';
 var gameStart = false;
 var gameOver = false;
-var level = 1;
+var level = 10;
 
 const blockColors = {
     red: "#FF0000",
@@ -77,7 +77,7 @@ class Ball {
         this.color = "#80FF00";
         this.radius = cnv.width * 10 / canvasBaseMeasurements.width;
         this.angle = 0;
-        this.velocity = 4;
+        this.speed = 4;
         this.px = cnv.width / 2;
         this.py = paddle.py - this.radius;
         this.dx = 0;
@@ -93,8 +93,8 @@ class Ball {
     }
     bounce() {
         const radians = Math.PI * this.angle / 180;
-        this.dx = Math.sin(radians) * this.velocity;
-        this.dy = - Math.cos(radians) * this.velocity;
+        this.dx = Math.sin(radians) * this.speed;
+        this.dy = - Math.cos(radians) * this.speed;
     }
     launch() {
         this.angle = Math.floor(Math.random() * 120) - 60;
@@ -169,8 +169,8 @@ class Block {
         const ballTop = ball.py - ball.radius;
         const ballBottom = ball.py + ball.radius;
         if (ballLeft < this.right && ballRight > this.left && ballTop < this.bottom && ballBottom > this.top) {
-            ball.dx = -ball.dx;
             ball.dy = -ball.dy;
+            ball.speed++;
             this.destroy();
             return true;
         } else {
@@ -209,20 +209,22 @@ class BlockGroup {
                 const colorIndex = r % colors.length;
                 block.color = blockColors[colors[colorIndex]];
                 this.blocks.add(block);
-                this.count++;
             }
         }
+        this.count = this.blocks.size;
     }
     getRowWidth() {
         return (blockMeasurements.width * this.blockColumnCount) + (this.blockGap * (this.blockColumnCount - 1));
     }
     drawGroup() {
         this.blocks.forEach(block => {
-            block.collisionCheck();
+            if (block.collisionCheck()) {
+                this.blocks.delete(block);
+                this.count = this.blocks.size;
+            }
             block.drawBlock();
         });
     }
-
 }
 
 initialize();
