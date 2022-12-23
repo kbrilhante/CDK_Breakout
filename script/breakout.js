@@ -240,7 +240,7 @@ class BlockGroup {
             block.drawBlock();
         });
         if (this.count === 0) {
-            level++; 
+            level++;
             restart();
         }
     }
@@ -327,12 +327,15 @@ function lostBall() {
 
 function restart() {
     gameStart = false;
-    ball.destroy();
-    ball = new Ball();
-    paddle.destroy();
-    paddle = new Paddle();
-    if (blockGroup.count === 0) {
-        blockGroup.destroy();
-        blockGroup = new BlockGroup();
+    if (!gameover) {
+        ball.destroy();
+        ball = new Ball();
+        paddle.destroy();
+        paddle = new Paddle();
+        if (blockGroup.count === 0) {
+            blockGroup.destroy();
+            blockGroup = new BlockGroup();
+        }
     }
+
 }
