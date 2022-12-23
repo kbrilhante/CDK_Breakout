@@ -40,6 +40,7 @@ class Paddle {
         this.dx = 0;
         this.vx = 10;
         this.cx = this.px + (this.width / 2);
+        this.target;
     }
     drawPaddle() {
         ctx.beginPath();
@@ -51,6 +52,7 @@ class Paddle {
         this.cx = this.px + (this.width / 2);
     }
     move() {
+        this.moveToTarget();
         const leftWall = this.vx;
         const rightWall = cnv.width - this.vx;
         const paddleLeft = this.px;
@@ -63,6 +65,19 @@ class Paddle {
             this.dx = 0;
         }
         this.px += this.dx;
+    }
+    moveToTarget() {
+        const range = this.vx / 2;
+        if (this.target) {
+            if (this.cx > this.target - range && this.cx < this.target + range) {
+                direction = 'stop';
+                delete this.target;
+            } else if (this.cx < this.target - range) {
+                direction = 'right'
+            } else { // (this.cx > target + range) {
+                direction = 'left'
+            }
+        }
     }
     destroy() {
         const keys = Object.keys(this);
@@ -224,6 +239,16 @@ class BlockGroup {
             }
             block.drawBlock();
         });
+        if (this.count === 0) {
+            level++; 
+            restart();
+        }
+    }
+    destroy() {
+        const keys = Object.keys(this);
+        keys.forEach(key => {
+            delete this[key];
+        });
     }
 }
 
@@ -236,6 +261,8 @@ function initialize() {
     cnv.addEventListener("touchstart", touchHandler);
     // cnv.addEventListener("resize", canvasResize);
     drawBackground();
+    gameOver = false;
+    gameStart = false;
     paddle = new Paddle();
     ball = new Ball();
     blockGroup = new BlockGroup();
@@ -289,14 +316,23 @@ function keyDownHandler(e) {
 function touchHandler(e) {
     console.log(e);
     const target = e.touches[0].clientX - (cnv.offsetLeft + cnv.clientLeft);
-
+    paddle.target = target;
+    paddle.moveToTarget();
 }
 
 function lostBall() {
+    restart();
+    // check lives
+}
+
+function restart() {
     gameStart = false;
     ball.destroy();
-    ball = new Ball(0);
+    ball = new Ball();
     paddle.destroy();
     paddle = new Paddle();
-    // check lives
+    if (blockGroup.count === 0) {
+        blockGroup.destroy();
+        blockGroup = new BlockGroup();
+    }
 }
