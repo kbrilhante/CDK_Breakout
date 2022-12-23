@@ -6,10 +6,12 @@ const fps = 60;
 const background = "#222222"
 
 var paddle, ball, blockGroup;
-var direction = 'stop';
-var gameStart = false;
-var gameOver = false;
-var level = 1;
+var direction;
+var gameStart;
+var gameOver;
+var level;
+var lives;
+
 
 const blockColors = {
     red: "#FF0000",
@@ -32,7 +34,8 @@ const blockMeasurements = {
 
 class Paddle {
     constructor() {
-        this.color = "#FF8000";
+        const cKey = Object.keys(blockColors)
+        this.color = blockColors[cKey[lives - 1]];
         this.width = cnv.width * 120 / canvasBaseMeasurements.width;
         this.height = cnv.height * 20 / canvasBaseMeasurements.height;
         this.px = (cnv.width / 2) - (this.width / 2);
@@ -89,7 +92,7 @@ class Paddle {
 
 class Ball {
     constructor() {
-        this.color = "#80FF00";
+        this.color = "#FF8000";
         this.radius = cnv.width * 10 / canvasBaseMeasurements.width;
         this.angle = 0;
         this.speed = 4;
@@ -260,9 +263,12 @@ function initialize() {
     cnv.addEventListener("touchmove", touchHandler);
     cnv.addEventListener("touchstart", touchHandler);
     // cnv.addEventListener("resize", canvasResize);
-    drawBackground();
+    direction = 'stop';
     gameOver = false;
     gameStart = false;
+    level = 1;
+    lives = 6;
+    drawBackground();
     paddle = new Paddle();
     ball = new Ball();
     blockGroup = new BlockGroup();
@@ -321,17 +327,20 @@ function touchHandler(e) {
 }
 
 function lostBall() {
+    lives--;
+    if (lives === 0) {
+        gameOver = true;
+    }
     restart();
-    // check lives
 }
 
 function restart() {
     gameStart = false;
-    if (!gameover) {
-        ball.destroy();
-        ball = new Ball();
-        paddle.destroy();
+    paddle.destroy();
+    ball.destroy();
+    if (!gameOver) {
         paddle = new Paddle();
+        ball = new Ball();
         if (blockGroup.count === 0) {
             blockGroup.destroy();
             blockGroup = new BlockGroup();
