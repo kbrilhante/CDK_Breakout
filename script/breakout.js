@@ -346,5 +346,4 @@ function restart() {
             blockGroup = new BlockGroup();
         }
     }
-
 }
