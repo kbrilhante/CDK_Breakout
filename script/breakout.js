@@ -135,7 +135,6 @@ class Ball {
         if (gameStart) {
             this.px += this.dx;
             this.py += this.dy;
-            // console.log(this.px, this.py)
             //collisions check
             if (this.px - this.radius <= 0 || this.px + this.radius >= cnv.width) {
                 this.dx = -this.dx;
@@ -154,7 +153,6 @@ class Ball {
             this.px = paddle.cx;
         }
     }
-
 }
 
 class Block {
@@ -262,7 +260,6 @@ function initialize() {
     addEventListener("keyup", keyDownHandler);
     cnv.addEventListener("touchmove", touchHandler);
     cnv.addEventListener("touchstart", touchHandler);
-    // cnv.addEventListener("resize", canvasResize);
     direction = 'stop';
     gameOver = false;
     gameStart = false;
@@ -275,11 +272,6 @@ function initialize() {
     // draw();
     setInterval(draw, 1000 / fps);
 }
-
-// function canvasResize() {
-//     blockMeasurements.width = cnv.width * 80 / canvasBaseMeasurements.width;
-//     blockMeasurements.height = cnv.height * 30 / canvasBaseMeasurements.height;
-// }
 
 function draw() {
     // console.dir(ctx)
@@ -323,7 +315,12 @@ function touchHandler(e) {
     console.log(e);
     const target = e.touches[0].clientX - (cnv.offsetLeft + cnv.clientLeft);
     paddle.target = target;
-    paddle.moveToTarget();
+    if (!gameStart && (e.touches[0].clientY - (cnv.offsetTop + cnv.clientTop)) < blockGroup.offsetBottom) {
+        console.log(e.touches[0].clientY - (cnv.offsetTop + cnv.clientTop), blockGroup.offsetBottom)
+        ball.launch();
+        gameStart = true;
+    }
+    // paddle.moveToTarget();
 }
 
 function lostBall() {
