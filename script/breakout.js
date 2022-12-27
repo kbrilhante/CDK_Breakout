@@ -149,6 +149,13 @@ class Ball {
             if (this.py + this.radius >= cnv.height) {
                 lostBall();
             }
+            if (this.px - this.radius <= 0) {
+                this.px = this.radius;
+                console.log(this.px)
+            } else if (this.px + this.radius >= cnv.width) {
+                this.px = cnv.width - this.radius;
+                console.log(this.px)
+            }
         } else {
             this.px = paddle.cx;
         }
@@ -265,7 +272,6 @@ function initialize() {
     gameStart = false;
     level = 1;
     lives = 6;
-    drawBackground();
     paddle = new Paddle();
     ball = new Ball();
     blockGroup = new BlockGroup();
@@ -275,17 +281,12 @@ function initialize() {
 
 function draw() {
     // console.dir(ctx)
-    drawBackground();
+    ctx.clearRect(0, 0, cnv.width, cnv.height)
     paddle.drawPaddle();
     paddle.move();
     ball.drawBall();
     ball.move();
     blockGroup.drawGroup();
-}
-
-function drawBackground() {
-    ctx.fillStyle = background;
-    ctx.fillRect(0, 0, cnv.width, cnv.height);
 }
 
 function keyDownHandler(e) {
@@ -312,15 +313,12 @@ function keyDownHandler(e) {
 }
 
 function touchHandler(e) {
-    console.log(e);
     const target = e.touches[0].clientX - (cnv.offsetLeft + cnv.clientLeft);
     paddle.target = target;
     if (!gameStart && (e.touches[0].clientY - (cnv.offsetTop + cnv.clientTop)) < blockGroup.offsetBottom) {
-        console.log(e.touches[0].clientY - (cnv.offsetTop + cnv.clientTop), blockGroup.offsetBottom)
         ball.launch();
         gameStart = true;
     }
-    // paddle.moveToTarget();
 }
 
 function lostBall() {
