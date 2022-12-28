@@ -200,8 +200,6 @@ class Block {
         const ballTop = ball.py - ball.radius;
         const ballBottom = ball.py + ball.radius;
         if (ballLeft < this.right && ballRight > this.left && ballTop < this.bottom && ballBottom > this.top) {
-            ball.dy = -ball.dy;
-            ball.speed += 0.2;
             this.destroy();
             return true;
         } else {
@@ -250,6 +248,8 @@ class BlockGroup {
     drawGroup() {
         this.blocks.forEach(block => {
             if (block.collisionCheck()) {
+                ball.dy = -ball.dy;
+                ball.speed += 0.2;
                 this.blocks.delete(block);
                 this.count = this.blocks.size;
             }
