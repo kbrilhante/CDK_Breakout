@@ -143,7 +143,7 @@ class Ball {
             if (this.py - this.radius <= 0) {
                 this.dy = -this.dy;
             }
-            if (this.py + this.radius >= paddle.py && (this.px + this.radius >= paddle.px && this.px - this.radius <= paddle.px + paddle.width)) {
+            if ((this.py + this.radius >= paddle.py && this.py - this.radius <= paddle.py + paddle.height) && (this.px + this.radius >= paddle.px && this.px - this.radius <= paddle.px + paddle.width)) {
                 this.dy = -this.dy;
                 this.bouncePaddle();
             }
