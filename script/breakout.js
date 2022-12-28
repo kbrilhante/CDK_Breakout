@@ -34,12 +34,13 @@ const blockMeasurements = {
 
 class Paddle {
     constructor() {
-        const cKey = Object.keys(blockColors)
+        const cKey = Object.keys(blockColors);
+        const bottomGap = 100;
         this.color = blockColors[cKey[lives - 1]];
         this.width = cnv.width * 120 / canvasBaseMeasurements.width;
         this.height = cnv.height * 20 / canvasBaseMeasurements.height;
         this.px = (cnv.width / 2) - (this.width / 2);
-        this.py = cnv.height - this.height - 20;
+        this.py = cnv.height - this.height - bottomGap;
         this.dx = 0;
         this.vx = 10;
         this.cx = this.px + (this.width / 2);
@@ -208,7 +209,7 @@ class BlockGroup {
         this.blockColumnCount = level + 1;
         this.blockGap = 50 / level;
         this.offsetTop = 100;
-        this.offsetBottom = cnv.height - 100;
+        this.offsetBottom = cnv.height - (paddle.py + (2 * ball.radius) + 30);
         this.count = 0;
         this.blocks = new Set();
         const maxWidth = cnv.width * 0.9;
