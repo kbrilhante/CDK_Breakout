@@ -122,8 +122,15 @@ class Ball {
     }
     bouncePaddle() {
         // console.log(Math.round(ball.px - paddle.cx));
-        const ballD = this.px - paddle.cx;
-        const newAngle = ballD * 120 / paddle.width;
+        // const ballD = this.px - paddle.cx;
+        // const newAngle = ballD * 120 / paddle.width;
+        const ballX = this.px - paddle.cx;
+        const ballY = paddle.cy - this.py;
+        let newAngle = Math.round(Math.atan2(ballX, ballY) * 180 / Math.PI);
+        console.log(newAngle)
+        if (Math.abs(newAngle) === 90) {
+            newAngle -= 1;
+        }
         this.angle = newAngle;
         this.bounce();
     }
@@ -135,6 +142,7 @@ class Ball {
     }
     move() {
         if (gameStart) {
+            console.log(this.speed)
             this.px += this.dx;
             this.py += this.dy;
             //collisions check
@@ -153,10 +161,8 @@ class Ball {
             }
             if (this.px - this.radius <= 0) {
                 this.px = this.radius;
-                console.log(this.px)
             } else if (this.px + this.radius >= cnv.width) {
                 this.px = cnv.width - this.radius;
-                console.log(this.px)
             }
         } else {
             this.px = paddle.cx;
