@@ -44,6 +44,7 @@ class Paddle {
         this.dx = 0;
         this.vx = 10;
         this.cx = this.px + (this.width / 2);
+        this.cy = this.py + (this.height / 2);
         this.target;
     }
     drawPaddle() {
