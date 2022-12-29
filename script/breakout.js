@@ -127,7 +127,7 @@ class Ball {
         const ballX = this.px - paddle.cx;
         const ballY = paddle.cy - this.py;
         let newAngle = Math.round(Math.atan2(ballX, ballY) * 180 / Math.PI);
-        console.log(newAngle)
+        // console.log(newAngle)
         if (Math.abs(newAngle) === 90) {
             newAngle -= 1;
         }
@@ -142,7 +142,7 @@ class Ball {
     }
     move() {
         if (gameStart) {
-            console.log(this.speed)
+            // console.log(this.speed);
             this.px += this.dx;
             this.py += this.dy;
             //collisions check
@@ -193,19 +193,20 @@ class Block {
         keys.forEach(key => {
             delete this[key];
         });
+        blockGroup.blocks.delete(this);
     }
-    collisionCheck() {
-        const ballLeft = ball.px - ball.radius;
-        const ballRight = ball.px + ball.radius;
-        const ballTop = ball.py - ball.radius;
-        const ballBottom = ball.py + ball.radius;
-        if (ballLeft < this.right && ballRight > this.left && ballTop < this.bottom && ballBottom > this.top) {
-            this.destroy();
-            return true;
-        } else {
-            return false;
-        }
-    }
+    // collisionCheck() {
+    //     const ballLeft = ball.px - ball.radius;
+    //     const ballRight = ball.px + ball.radius;
+    //     const ballTop = ball.py - ball.radius;
+    //     const ballBottom = ball.py + ball.radius;
+    //     if (ballLeft < this.right && ballRight > this.left && ballTop < this.bottom && ballBottom > this.top) {
+    //         this.destroy();
+    //         return true;
+    //     } else {
+    //         return false;
+    //     }
+    // }
 }
 
 class BlockGroup {
@@ -253,6 +254,18 @@ class BlockGroup {
             //     this.blocks.delete(block);
             //     this.count = this.blocks.size;
             // }
+            // block.drawBlock();
+            const ballLeft = ball.px - ball.radius;
+            const ballRight = ball.px + ball.radius;
+            const ballTop = ball.py - ball.radius;
+            const ballBottom = ball.py + ball.radius;
+            // collision check
+            if (ballLeft <= block.right && ballRight >= block.left && ballBottom >= block.top && ballTop <= block.bottom) {
+                ball.speed += 0.2;
+                ball.bounce();
+                block.destroy();
+                this.count -= 1;
+            }
             block.drawBlock();
         });
         if (this.count === 0) {
