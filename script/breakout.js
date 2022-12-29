@@ -247,12 +247,12 @@ class BlockGroup {
     }
     drawGroup() {
         this.blocks.forEach(block => {
-            if (block.collisionCheck()) {
-                ball.dy = -ball.dy;
-                ball.speed += 0.2;
-                this.blocks.delete(block);
-                this.count = this.blocks.size;
-            }
+            // if (block.collisionCheck()) {
+            //     ball.dy = -ball.dy;
+            //     ball.speed += 0.2;
+            //     this.blocks.delete(block);
+            //     this.count = this.blocks.size;
+            // }
             block.drawBlock();
         });
         if (this.count === 0) {
