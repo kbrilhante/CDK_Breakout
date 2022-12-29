@@ -134,6 +134,20 @@ class Ball {
         this.angle = newAngle;
         this.bounce();
     }
+    bounceBlock(vertCol) { // vertCol is boolean
+        const radians = Math.PI * this.angle / 180;
+        const dx = Math.sign(this.dx) * Math.sin(radians) * this.speed;
+        const dy = Math.sign(this.dy) * Math.cos(radians) * this.speed;
+        if (vertCol) {
+            console.log('vertical');
+            this.dx = dx;
+            this.dy = -dy;
+        } else {
+            console.log('side');
+            this.dx = -dx;
+            this.dy = dy;
+        }
+    }
     destroy() {
         const keys = Object.keys(this);
         keys.forEach(key => {
@@ -142,7 +156,7 @@ class Ball {
     }
     move() {
         if (gameStart) {
-            // console.log(this.speed);
+            console.log(this.speed);
             this.px += this.dx;
             this.py += this.dy;
             //collisions check
@@ -195,18 +209,6 @@ class Block {
         });
         blockGroup.blocks.delete(this);
     }
-    // collisionCheck() {
-    //     const ballLeft = ball.px - ball.radius;
-    //     const ballRight = ball.px + ball.radius;
-    //     const ballTop = ball.py - ball.radius;
-    //     const ballBottom = ball.py + ball.radius;
-    //     if (ballLeft < this.right && ballRight > this.left && ballTop < this.bottom && ballBottom > this.top) {
-    //         this.destroy();
-    //         return true;
-    //     } else {
-    //         return false;
-    //     }
-    // }
 }
 
 class BlockGroup {
@@ -248,13 +250,6 @@ class BlockGroup {
     }
     drawGroup() {
         this.blocks.forEach(block => {
-            // if (block.collisionCheck()) {
-            //     ball.dy = -ball.dy;
-            //     ball.speed += 0.2;
-            //     this.blocks.delete(block);
-            //     this.count = this.blocks.size;
-            // }
-            // block.drawBlock();
             const ballLeft = ball.px - ball.radius;
             const ballRight = ball.px + ball.radius;
             const ballTop = ball.py - ball.radius;
@@ -262,7 +257,12 @@ class BlockGroup {
             // collision check
             if (ballLeft <= block.right && ballRight >= block.left && ballBottom >= block.top && ballTop <= block.bottom) {
                 ball.speed += 0.2;
-                ball.bounce();
+                const radians = Math.Pi * ball.angle / 180;
+                if (ball.py > block.top && ball.py < block.bottom) {
+                    ball.bounceBlock(false); // side collision
+                } else {
+                    ball.bounceBlock(true); // vertical collision
+                }
                 block.destroy();
                 this.count -= 1;
             }
