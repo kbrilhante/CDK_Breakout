@@ -215,7 +215,8 @@ class BlockGroup {
     constructor() {
         this.blockRowCount = level + 2;
         this.blockColumnCount = level + 1;
-        this.blockGap = 50 / level;
+        this.blockGap = 60 / level;
+        if (this.blockGap <= ball.radius * 2) {this.blockGap = 0}
         this.offsetTop = 100;
         this.offsetBottom = cnv.height - (paddle.py + (2 * ball.radius) + 30);
         this.count = 0;
@@ -244,6 +245,10 @@ class BlockGroup {
             }
         }
         this.count = this.blocks.size;
+        if (ball.radius * 2 > blockMeasurements.height) {
+            ball.radius = blockMeasurements.height / 2;
+        }
+
     }
     getRowWidth() {
         return (blockMeasurements.width * this.blockColumnCount) + (this.blockGap * (this.blockColumnCount - 1));
