@@ -121,9 +121,6 @@ class Ball {
         this.bounce();
     }
     bouncePaddle() {
-        // console.log(Math.round(ball.px - paddle.cx));
-        // const ballD = this.px - paddle.cx;
-        // const newAngle = ballD * 120 / paddle.width;
         const ballX = this.px - paddle.cx;
         const ballY = paddle.cy - this.py;
         let newAngle = Math.round(Math.atan2(ballX, ballY) * 180 / Math.PI);
