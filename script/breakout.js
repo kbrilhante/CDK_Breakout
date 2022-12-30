@@ -135,18 +135,16 @@ class Ball {
         this.bounce();
     }
     bounceBlock(vertCol) { // vertCol is boolean
-        const radians = Math.PI * this.angle / 180;
-        const dx = Math.sign(this.dx) * Math.sin(radians) * this.speed;
-        const dy = Math.sign(this.dy) * Math.cos(radians) * this.speed;
+        let newAngle;
         if (vertCol) {
             console.log('vertical');
-            this.dx = dx;
-            this.dy = -dy;
+            newAngle = Math.round(Math.atan2(this.dx, this.dy) * 180 / Math.PI);
         } else {
             console.log('side');
-            this.dx = -dx;
-            this.dy = dy;
+            newAngle = Math.round(Math.atan2(-this.dx, -this.dy) * 180 / Math.PI);
         }
+        this.angle = newAngle;
+        this.bounce()
     }
     destroy() {
         const keys = Object.keys(this);
