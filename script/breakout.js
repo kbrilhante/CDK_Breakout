@@ -267,6 +267,11 @@ class BlockGroup {
                 }
                 block.destroy();
                 this.count -= 1;
+                score += 15;
+                if (score > hiScore) {
+                    hiScore = score;
+                    localStorage.setItem('hiScore', hiScore);
+                }
             }
             block.drawBlock();
         });
@@ -462,8 +467,7 @@ function touchHandler(e) {
         offsetX >= button.left &&
         offsetX <= button.right
     ) {
-        ball.launch();
-        gameStart = true;
+        startGame();
     } else {
         paddle.target = offsetX;
     }
@@ -479,8 +483,7 @@ function mouseHandler(e) {
         e.offsetX >= button.left &&
         e.offsetX <= button.right
     ) {
-        ball.launch();
-        gameStart = true;
+        startGame();
     }
 }
 
