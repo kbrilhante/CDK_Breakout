@@ -389,7 +389,7 @@ function newGame() {
     gameOver = false;
     gameStart = false;
     level = 1;
-    lives = 1//6;
+    lives = 6;
     score = 0;
     paddle = new Paddle();
     ball = new Ball();
