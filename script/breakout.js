@@ -7,11 +7,9 @@ const background = "#222222"
 
 var paddle, ball, blockGroup;
 var direction;
-var gameStart;
-var gameOver;
-var level;
-var lives;
-
+var gameStart, gameOver;
+var level, lives, score, hiScore;
+var button;
 
 const blockColors = {
     red: "#FF0000",
@@ -49,10 +47,13 @@ class Paddle {
     }
     drawPaddle() {
         ctx.beginPath();
+        ctx.shadowBlur = 0;
+        ctx.shadowOffsetX = 0;
+        ctx.shadowOffsetY = 0;
         ctx.rect(this.px, this.py, this.width, this.height);
         ctx.fillStyle = this.color;
         ctx.fill();
-        ctx.strokeStyle = "#eee";
+        ctx.strokeStyle = "#000";
         ctx.stroke();
         this.cx = this.px + (this.width / 2);
     }
@@ -105,10 +106,13 @@ class Ball {
     }
     drawBall() {
         ctx.beginPath();
+        ctx.shadowBlur = 0;
+        ctx.shadowOffsetX = 0;
+        ctx.shadowOffsetY = 0;
         ctx.arc(this.px, this.py, this.radius, 0, Math.PI * 2);
         ctx.fillStyle = this.color;
         ctx.fill();
-        ctx.strokeStyle = "#eee";
+        ctx.strokeStyle = "#000";
         ctx.stroke();
     }
     bounce() {
@@ -134,10 +138,10 @@ class Ball {
     bounceBlock(vertCol) { // vertCol is boolean
         let newAngle;
         if (vertCol) {
-            console.log('vertical');
+            // console.log('vertical');
             newAngle = Math.round(Math.atan2(this.dx, this.dy) * 180 / Math.PI);
         } else {
-            console.log('side');
+            // console.log('side');
             newAngle = Math.round(Math.atan2(-this.dx, -this.dy) * 180 / Math.PI);
         }
         this.angle = newAngle;
@@ -151,7 +155,7 @@ class Ball {
     }
     move() {
         if (gameStart) {
-            console.log(this.speed);
+            // console.log(this.speed);
             this.px += this.dx;
             this.py += this.dy;
             //collisions check
@@ -191,10 +195,13 @@ class Block {
     }
     drawBlock() {
         ctx.beginPath();
+        ctx.shadowBlur = 0;
+        ctx.shadowOffsetX = 0;
+        ctx.shadowOffsetY = 0;
         ctx.rect(this.left, this.top, this.width, this.height);
         ctx.fillStyle = this.color;
         ctx.fill();
-        ctx.strokeStyle = "#eee";
+        ctx.strokeStyle = "#000";
         ctx.stroke();
     }
     destroy() {
@@ -211,7 +218,7 @@ class BlockGroup {
         this.blockRowCount = level + 2;
         this.blockColumnCount = level + 1;
         this.blockGap = 60 / level;
-        if (this.blockGap <= ball.radius * 2) {this.blockGap = 0}
+        if (this.blockGap <= ball.radius * 2) { this.blockGap = 0 }
         this.offsetTop = 100;
         this.offsetBottom = cnv.height - (paddle.py + (2 * ball.radius) + 30);
         this.count = 0;
@@ -227,7 +234,6 @@ class BlockGroup {
         }
         const maxHeight = cnv.height - (this.offsetTop + this.offsetBottom);
         const rowStart = Math.round((cnv.width / 2) - (rowWidth / 2));
-        // this.blocks = new Block(blockRowStart, this.offsetTop);
         for (let r = 0; r < this.blockRowCount; r++) {
             for (let c = 0; c < this.blockColumnCount; c++) {
                 const px = rowStart + ((blockMeasurements.width + this.blockGap) * c);
@@ -240,9 +246,6 @@ class BlockGroup {
             }
         }
         this.count = this.blocks.size;
-        if (ball.radius * 2 > blockMeasurements.height) {
-            ball.radius = blockMeasurements.height / 2;
-        }
 
     }
     getRowWidth() {
@@ -257,7 +260,6 @@ class BlockGroup {
             // collision check
             if (ballLeft <= block.right && ballRight >= block.left && ballBottom >= block.top && ballTop <= block.bottom) {
                 ball.speed += 0.2;
-                const radians = Math.Pi * ball.angle / 180;
                 if (ball.py > block.top && ball.py < block.bottom) {
                     ball.bounceBlock(false); // side collision
                 } else {
@@ -281,6 +283,74 @@ class BlockGroup {
     }
 }
 
+class Button {
+    constructor(type) {
+        this.cx = cnv.width / 2;
+        this.cy = cnv.height / 2;
+        this.width = 300;
+        this.height = 150;
+        switch (type) {
+            case 'gameStart':
+                this.color = blockColors.green;
+                this.fontColor = '#000'
+                this.title = 'Launch the Ball';
+                this.text = ['Press SPACEBAR or', 'touch here to start'];
+                this.top = this.cy - this.height / 2;
+                this.bottom = this.cy + this.height / 2;
+                this.left = this.cx - this.width / 2;
+                this.right = this.cx + this.width / 2;
+                break;
+
+            case 'gameOver':
+                this.color = blockColors.red;
+                this.fontColor = '#fff'
+                this.title = 'GAME OVER';
+                this.text = ['Press ENTER or', 'touch here to try again'];
+                this.top = this.cy - this.height / 2;
+                this.bottom = this.cy + this.height / 2;
+                this.left = this.cx - this.width / 2;
+                this.right = this.cx + this.width / 2;
+                break;
+        }
+    }
+    drawButton() {
+        // btn Background
+        ctx.beginPath();
+        ctx.shadowColor = "#000";
+        ctx.shadowBlur = 10;
+        ctx.shadowOffsetX = 10;
+        ctx.shadowOffsetY = 10;
+        ctx.fillStyle = this.color + '90';
+        ctx.fillRect(this.left, this.top, this.width, this.height);
+        ctx.stroke();
+
+        // btn text info
+        ctx.textBaseline = 'middle';
+        ctx.shadowBlur = 0;
+        ctx.shadowOffsetX = 0;
+        ctx.shadowOffsetY = 0;
+        ctx.fillStyle = this.fontColor;
+        ctx.textAlign = 'center';
+
+        // title
+        ctx.font = '36px Fantasy';
+        let posY = this.top + (this.height / 4);
+        ctx.fillText(this.title, this.cx, posY, this.width * 0.9);
+        //text
+        ctx.font = '20px Fantasy';
+        posY += this.height / 3;
+        ctx.fillText(this.text[0], this.cx, posY, this.width * 0.9);
+        posY += this.height / 6;
+        ctx.fillText(this.text[1], this.cx, posY, this.width * 0.9);
+    }
+    destroy() {
+        const keys = Object.keys(this);
+        keys.forEach(key => {
+            delete this[key];
+        });
+    }
+}
+
 initialize();
 
 function initialize() {
@@ -288,11 +358,17 @@ function initialize() {
     addEventListener("keyup", keyDownHandler);
     cnv.addEventListener("touchmove", touchHandler);
     cnv.addEventListener("touchstart", touchHandler);
+    cnv.addEventListener("click", mouseHandler);
     direction = 'stop';
     gameOver = false;
     gameStart = false;
     level = 1;
     lives = 6;
+    score = 0;
+    hiScore = localStorage.getItem('hiScore');
+    if (!hiScore) {
+        hiScore = 0;
+    }
     paddle = new Paddle();
     ball = new Ball();
     blockGroup = new BlockGroup();
@@ -301,13 +377,53 @@ function initialize() {
 }
 
 function draw() {
-    // console.dir(ctx)
     ctx.clearRect(0, 0, cnv.width, cnv.height)
     paddle.drawPaddle();
     paddle.move();
     ball.drawBall();
     ball.move();
     blockGroup.drawGroup();
+    btnHandler();
+    drawGameInfo();
+}
+
+function drawGameInfo() {
+    // top bar area info
+    const barWidth = cnv.width * 0.96;
+    const barHeight = blockGroup.offsetTop * 0.7;
+
+    const maxWidth = barWidth / 4;
+
+    const barTop = (blockGroup.offsetTop - barHeight) / 2;
+    // const barTop = blockGroup.offsetTop / 2;
+    const barLeft = (cnv.width - barWidth) / 2;
+    const barRight = barLeft + barWidth;
+
+    // Top Game general rules
+    ctx.textBaseline = 'top';
+    // ctx.textBaseline = 'middle';
+    ctx.font = '20px Fantasy';
+    ctx.fillStyle = '#fff';
+    ctx.shadowBlur = 0;
+    ctx.shadowOffsetX = 0;
+    ctx.shadowOffsetY = 0;
+    ctx.textAlign = 'center';
+
+    // score
+    let pos = barLeft + maxWidth / 2;
+    ctx.fillText('Score: ' + score, pos, barTop, maxWidth);
+
+    // level
+    pos += maxWidth;
+    ctx.fillText('Level: ' + level, pos, barTop, maxWidth);
+
+    // lives
+    pos += maxWidth;
+    ctx.fillText('Lives: ' + lives, pos, barTop, maxWidth);
+
+    // hiscore
+    pos += maxWidth;
+    ctx.fillText('Hi-Score: ' + hiScore, pos, barTop, maxWidth);
 }
 
 function keyDownHandler(e) {
@@ -342,6 +458,8 @@ function touchHandler(e) {
     }
 }
 
+function mouseHandler(e) { }
+
 function lostBall() {
     lives--;
     if (lives === 0) {
@@ -361,5 +479,17 @@ function restart() {
             blockGroup.destroy();
             blockGroup = new BlockGroup();
         }
+    }
+}
+
+function btnHandler() {
+    if (!gameStart && !gameOver) {
+        button = new Button('gameStart');
+        button.drawButton();
+    } else if (gameOver) {
+        button = new Button('gameOver');
+        button.drawButton();
+    } else {
+        button.destroy();
     }
 }
