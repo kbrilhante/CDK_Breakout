@@ -359,19 +359,11 @@ function initialize() {
     cnv.addEventListener("touchmove", touchHandler);
     cnv.addEventListener("touchstart", touchHandler);
     cnv.addEventListener("click", mouseHandler);
-    direction = 'stop';
-    gameOver = false;
-    gameStart = false;
-    level = 1;
-    lives = 6;
-    score = 0;
     hiScore = localStorage.getItem('hiScore');
     if (!hiScore) {
         hiScore = 0;
     }
-    paddle = new Paddle();
-    ball = new Ball();
-    blockGroup = new BlockGroup();
+    newGame();
     // draw();
     setInterval(draw, 1000 / fps);
 }
@@ -385,6 +377,23 @@ function draw() {
     blockGroup.drawGroup();
     btnHandler();
     drawGameInfo();
+}
+
+function startGame() {
+    ball.launch();
+    gameStart = true;
+}
+
+function newGame() {
+    direction = 'stop';
+    gameOver = false;
+    gameStart = false;
+    level = 1;
+    lives = 1//6;
+    score = 0;
+    paddle = new Paddle();
+    ball = new Ball();
+    blockGroup = new BlockGroup();
 }
 
 function drawGameInfo() {
@@ -426,16 +435,11 @@ function drawGameInfo() {
     ctx.fillText('Hi-Score: ' + hiScore, pos, barTop, maxWidth);
 }
 
-function startGame() {
-    ball.launch();
-    gameStart = true;
-}
-
 function keyDownHandler(e) {
     // console.log(e);
     const upDown = e.type;
     const key = e.code;
-    // console.log(key)
+    console.log(key)
     // paddle controls
     if (!gameOver) {
         if (!gameStart && key === 'Space') {
@@ -450,6 +454,8 @@ function keyDownHandler(e) {
         } else {
             direction = 'stop';
         }
+    } else if (key === 'Enter') {
+        newGame();
     }
 }
 
@@ -460,29 +466,23 @@ function touchHandler(e) {
     // console.log(offsetX, offsetY);
 
     // if (!gameStart && (e.touches[0].clientY - (cnv.offsetTop + cnv.clientTop)) < blockGroup.offsetBottom) {
-    if (
-        !gameStart &&
-        offsetY >= button.top &&
-        offsetY <= button.bottom &&
-        offsetX >= button.left &&
-        offsetX <= button.right
-    ) {
-        startGame();
+    if (offsetY >= button.top && offsetY <= button.bottom && offsetX >= button.left && offsetX <= button.right) {
+        clickHandler();
     } else {
         paddle.target = offsetX;
     }
 }
 
 function mouseHandler(e) {
-    console.dir(e)
-    e.offsetX;
-    if (
-        !gameStart &&
-        e.offsetY >= button.top &&
-        e.offsetY <= button.bottom &&
-        e.offsetX >= button.left &&
-        e.offsetX <= button.right
-    ) {
+    if (e.offsetY >= button.top && e.offsetY <= button.bottom && e.offsetX >= button.left && e.offsetX <= button.right) {
+        clickHandler();
+    }
+}
+
+function clickHandler() {
+    if (gameOver) {
+        newGame();
+    } else if (!gameStart) {
         startGame();
     }
 }
