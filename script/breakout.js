@@ -33,7 +33,7 @@ const blockMeasurements = {
 class Paddle {
     constructor() {
         const cKey = Object.keys(blockColors);
-        const bottomGap = 100;
+        const bottomGap = 50;
         this.color = blockColors[cKey[lives - 1]];
         this.width = cnv.width * 120 / canvasBaseMeasurements.width;
         this.height = cnv.height * 20 / canvasBaseMeasurements.height;
@@ -289,27 +289,22 @@ class Button {
         this.cy = cnv.height / 2;
         this.width = 300;
         this.height = 150;
+        this.top = this.cy - this.height / 2;
+        this.bottom = this.cy + this.height / 2;
+        this.left = this.cx - this.width / 2;
+        this.right = this.cx + this.width / 2;
         switch (type) {
             case 'gameStart':
                 this.color = blockColors.green;
                 this.fontColor = '#000'
                 this.title = 'Launch the Ball';
                 this.text = ['Press SPACEBAR or', 'touch here to start'];
-                this.top = this.cy - this.height / 2;
-                this.bottom = this.cy + this.height / 2;
-                this.left = this.cx - this.width / 2;
-                this.right = this.cx + this.width / 2;
                 break;
-
             case 'gameOver':
                 this.color = blockColors.red;
                 this.fontColor = '#fff'
                 this.title = 'GAME OVER';
                 this.text = ['Press ENTER or', 'touch here to try again'];
-                this.top = this.cy - this.height / 2;
-                this.bottom = this.cy + this.height / 2;
-                this.left = this.cx - this.width / 2;
-                this.right = this.cx + this.width / 2;
                 break;
         }
     }
@@ -426,6 +421,11 @@ function drawGameInfo() {
     ctx.fillText('Hi-Score: ' + hiScore, pos, barTop, maxWidth);
 }
 
+function startGame() {
+    ball.launch();
+    gameStart = true;
+}
+
 function keyDownHandler(e) {
     // console.log(e);
     const upDown = e.type;
@@ -434,8 +434,7 @@ function keyDownHandler(e) {
     // paddle controls
     if (!gameOver) {
         if (!gameStart && key === 'Space') {
-            ball.launch();
-            gameStart = true;
+            startGame();
         }
         if (upDown === 'keydown') {
             if (key === 'KeyA' || key === 'ArrowLeft') {
@@ -450,15 +449,40 @@ function keyDownHandler(e) {
 }
 
 function touchHandler(e) {
-    const target = e.touches[0].clientX - (cnv.offsetLeft + cnv.clientLeft);
-    paddle.target = target;
-    if (!gameStart && (e.touches[0].clientY - (cnv.offsetTop + cnv.clientTop)) < blockGroup.offsetBottom) {
+    const offsetX = e.touches[0].clientX - (cnv.offsetLeft + cnv.clientLeft);
+    const offsetY = e.touches[0].clientY - (cnv.offsetTop + cnv.clientTop);
+
+    // console.log(offsetX, offsetY);
+
+    // if (!gameStart && (e.touches[0].clientY - (cnv.offsetTop + cnv.clientTop)) < blockGroup.offsetBottom) {
+    if (
+        !gameStart &&
+        offsetY >= button.top &&
+        offsetY <= button.bottom &&
+        offsetX >= button.left &&
+        offsetX <= button.right
+    ) {
+        ball.launch();
+        gameStart = true;
+    } else {
+        paddle.target = offsetX;
+    }
+}
+
+function mouseHandler(e) {
+    console.dir(e)
+    e.offsetX;
+    if (
+        !gameStart &&
+        e.offsetY >= button.top &&
+        e.offsetY <= button.bottom &&
+        e.offsetX >= button.left &&
+        e.offsetX <= button.right
+    ) {
         ball.launch();
         gameStart = true;
     }
 }
-
-function mouseHandler(e) { }
 
 function lostBall() {
     lives--;
