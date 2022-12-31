@@ -439,7 +439,7 @@ function keyDownHandler(e) {
     // console.log(e);
     const upDown = e.type;
     const key = e.code;
-    console.log(key)
+    // console.log(key)
     // paddle controls
     if (!gameOver) {
         if (!gameStart && key === 'Space') {
